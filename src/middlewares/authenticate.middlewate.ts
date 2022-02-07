@@ -7,7 +7,6 @@ const authenticateMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     const Authenticated = await new LoginUserService().execute({
       email,
@@ -16,7 +15,7 @@ const authenticateMiddleware = async (
     req.AuthenticatedUser = Authenticated;
     return next();
   } catch (e: any) {
-    return res.json({ message: "error " + e.messsage });
+    return next(e);
   }
 };
 

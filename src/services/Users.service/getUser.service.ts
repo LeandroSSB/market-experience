@@ -5,9 +5,9 @@ class GetUserService {
   async execute() {
     const usersRepository = getCustomRepository(UsersRepository);
 
-    const users = usersRepository.find();
+    const users = await usersRepository.find();
 
-    return users;
+    return { data: users };
   }
 }
 export default GetUserService;

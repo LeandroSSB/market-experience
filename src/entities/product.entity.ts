@@ -13,10 +13,18 @@ export class Product {
   @Column()
   price!: number;
 
+  @Column()
+  createdAt!: string;
+
+  @Column()
+  updatedAt!: string;
+
   @ManyToOne(() => User, (user) => user.cart)
   userId!: string;
 
   constructor() {
     this.uuid = uuidv4();
+    this.createdAt = new Date().toJSON();
+    this.updatedAt = new Date().toJSON();
   }
 }

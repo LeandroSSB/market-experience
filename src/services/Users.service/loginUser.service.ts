@@ -1,6 +1,7 @@
 import { UsersRepository } from "../../repositories/user.repository";
 import bcrypt from "bcrypt";
 import { getCustomRepository } from "typeorm";
+import { ErrorHandler } from "../../utils/error";
 
 interface ILoginProps {
   email: string;
@@ -17,12 +18,12 @@ class LoginUserService {
     });
 
     if (!user?.email) {
-      throw new Error("Email/Password incorrect");
+      throw new ErrorHandler(401, "Email/Password incorrect");
     }
-    const match = bcrypt.compare(password, user.password);
+    const match = bcrypt.compareSync(password, user.password);
 
     if (!match) {
-      throw new Error("Email/Password incorrect");
+      throw new ErrorHandler(401, "Email/Password incorrect");
     }
 
     return user;

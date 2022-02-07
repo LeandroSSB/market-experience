@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-class Errorhanlder extends Error {
+export class ErrorHandler extends Error {
   statusCode: number;
   constructor(statusCode: number, message: string) {
     super();
@@ -9,7 +9,7 @@ class Errorhanlder extends Error {
   }
 }
 
-const handleError = (err: any, res: Response) => {
+export const handleError = (err: any, res: Response) => {
   const { statusCode, message } = err;
   res.status(statusCode).json({
     status: "error",
@@ -20,5 +20,5 @@ const handleError = (err: any, res: Response) => {
 
 module.exports = {
   handleError,
-  Errorhanlder,
+  ErrorHandler,
 };

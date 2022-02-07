@@ -1,5 +1,6 @@
 import { getCustomRepository } from "typeorm";
 import { UsersRepository } from "../../repositories/user.repository";
+import { ErrorHandler } from "../../utils/error";
 
 class FindUserService {
   async execute(uuid: string, ownerEmail: string) {
@@ -17,13 +18,13 @@ class FindUserService {
           },
         });
         if (!user?.email) {
-          throw new Error("User not found!");
+          throw new ErrorHandler(404, "User not found!");
         }
         const { password, ...output } = user;
 
         return output;
       } else {
-        throw new Error("Missing admin permissions");
+        throw new ErrorHandler(401, "Missing admin permissions");
       }
     }
 
