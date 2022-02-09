@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import { Product } from "./product.entity";
 
@@ -25,7 +25,11 @@ export class User {
   @Column()
   updatedOn: string;
 
-  @OneToMany(() => Product, (product) => product.userId, { cascade: true })
+  @ManyToMany((type) => Product, (product) => product.uuid, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinTable()
   cart!: Product[];
 
   constructor() {

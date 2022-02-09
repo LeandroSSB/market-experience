@@ -1,11 +1,12 @@
-import { ProductsRepository } from "../../repositories/product.repositoru";
+import { getCustomRepository } from "typeorm";
+import { ProductsRepository } from "../../repositories/product.repository";
 import { UsersRepository } from "../../repositories/user.repository";
 import { ErrorHandler } from "../../utils/error";
 
-class AddProductCart {
+class AddProductCartService {
   async execute(uuid: string, ownerEmail: string) {
-    const productsRepository = new ProductsRepository();
-    const usersRepository = new UsersRepository();
+    const productsRepository = getCustomRepository(ProductsRepository);
+    const usersRepository = getCustomRepository(UsersRepository);
 
     const product = await productsRepository.findOne({
       where: {
@@ -26,6 +27,15 @@ class AddProductCart {
       throw new ErrorHandler(404, "User not found");
     }
 
+    if (!user.cart) {
+      user.cart = [];
+    }
+
+    if (user.cart.find((prod) => prod.uuid == product.uuid)) {
+      throw new ErrorHandler(409, "Item already in the cart ");
+    }
+
+    user.updatedOn = new Date().toJSON();
     user.cart.push(product);
 
     await usersRepository.save(user);
@@ -36,4 +46,4 @@ class AddProductCart {
   }
 }
 
-export default AddProductCart;
+export default AddProductCartService;

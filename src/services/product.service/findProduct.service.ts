@@ -1,9 +1,10 @@
-import { ProductsRepository } from "../../repositories/product.repositoru";
+import { getCustomRepository } from "typeorm";
+import { ProductsRepository } from "../../repositories/product.repository";
 import { ErrorHandler } from "../../utils/error";
 
 class FindProductService {
   async execute(uuid: string) {
-    const productsRepository = new ProductsRepository();
+    const productsRepository = getCustomRepository(ProductsRepository);
 
     const product = await productsRepository.findOne({
       where: {

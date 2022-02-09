@@ -17,7 +17,7 @@ describe("Testing status code and returns", () => {
   });
 
   it("POST /product - Should create product and only ADM could do that ", async () => {
-    await request(app).post("/product").expect(400);
+    await request(app).post("/product").expect(401);
 
     await request(app)
       .post("/product")
@@ -50,7 +50,7 @@ describe("Testing status code and returns", () => {
       .expect(200);
     expect(product.body).toHaveProperty("name");
     expect(product.body).toHaveProperty("uuid");
-    expect(product.body).toHaveProperty("value");
+    expect(product.body).toHaveProperty("price");
   });
 
   it("POST /cart - Should add a product to the cart (id)", async () => {
@@ -74,7 +74,7 @@ describe("Testing status code and returns", () => {
       })
       .expect(200);
 
-    await request(app).post("/cart").expect(401);
+    await request(app).post("/cart").expect(400);
 
     const addProduct = await request(app)
       .post("/cart")
@@ -84,11 +84,65 @@ describe("Testing status code and returns", () => {
       .set({
         Authorization: `Bearer ${user.body.token}`,
       })
-      .expect(201);
+      .expect(200);
 
     expect(addProduct.body).toHaveProperty("cart");
     expect(addProduct.body.cart).toHaveProperty("map");
     expect(addProduct.body).not.toHaveProperty("password");
     expect(addProduct.body).toHaveProperty("name");
   });
+
+  it("GET /cart/:uuid - Should return the cart list ", async () => {
+    const newUser = await request(app)
+      .post("/user")
+      .send({
+        name: "Test",
+        email: "testa@gmail.com",
+        password: "123456",
+        isAdm: true,
+      })
+      .expect(201);
+
+    const token = jwt.sign(
+      { isAdm: true, email: "testa@gmail.com" },
+      config.secret
+    );
+
+    await request(app)
+      .get("/cart/notAndId")
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
+      .expect(404);
+    await request(app).get("/cart/noasdas").expect(404);
+    const cart = await request(app)
+      .get(`/cart/${newUser.body.uuid}`)
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
+      .expect(200);
+
+    expect(cart.body).toHaveProperty("data");
+    expect(cart.body.data).toHaveProperty("map");
+  });
+
+  it("GET /cart - Should list all carts only for administrators ", async () => {
+    const token = jwt.sign(
+      { isAdm: true, email: "testa@gmail.com" },
+      config.secret
+    );
+    await request(app).get("/cart").expect(401);
+    const carts = await request(app)
+      .get("/cart")
+      .set({
+        Authorization: `Bearer ${token}`,
+      });
+
+    expect(carts.body).toHaveProperty("data");
+    expect(carts.body.data).toHaveProperty("map");
+    expect(carts.body.data[0]).toHaveProperty("uuid");
+    expect(carts.body.data[0]).toHaveProperty("cart");
+  });
+
+  it("DELETE /cart/:product_uuid - Only owner and adm can do that ", () => {});
 });

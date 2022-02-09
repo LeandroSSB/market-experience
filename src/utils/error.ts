@@ -5,15 +5,15 @@ export class ErrorHandler extends Error {
   constructor(statusCode: number, message: string) {
     super();
     this.message = message;
-    this.statusCode = statusCode;
+    this.statusCode = statusCode || 500;
   }
 }
 
 export const handleError = (err: any, res: Response) => {
   const { statusCode, message } = err;
-  res.status(statusCode).json({
+  res.status(statusCode || 500).json({
     status: "error",
-    statusCode,
+    statusCode: statusCode || 500,
     message,
   });
 };

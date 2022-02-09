@@ -1,13 +1,13 @@
-import { Product } from "../../entities/product.entity";
-import { ProductsRepository } from "../../repositories/product.repositoru";
+import { getCustomRepository } from "typeorm";
+import { ProductsRepository } from "../../repositories/product.repository";
 
 class GetProductsService {
-  async execute(): Promise<Product[]> {
-    const productsRepository = new ProductsRepository();
+  async execute() {
+    const productsRepository = getCustomRepository(ProductsRepository);
 
     const products = await productsRepository.find();
 
-    return products;
+    return { data: products };
   }
 }
 

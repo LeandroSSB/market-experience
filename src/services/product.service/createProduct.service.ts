@@ -1,4 +1,6 @@
-import { ProductsRepository } from "../../repositories/product.repositoru";
+import { getCustomRepository } from "typeorm";
+import { ProductsRepository } from "../../repositories/product.repository";
+import { ErrorHandler } from "../../utils/error";
 
 interface IProductProps {
   name: string;
@@ -6,8 +8,12 @@ interface IProductProps {
 }
 
 class CreateProductService {
-  async execute({ name, price }: IProductProps) {
-    const productsRepository = new ProductsRepository();
+  async execute({ name, price }: IProductProps, isAdm: boolean) {
+    const productsRepository = getCustomRepository(ProductsRepository);
+
+    if (!isAdm) {
+      throw new ErrorHandler(401, "Missing adm permissions");
+    }
 
     const product = productsRepository.create({
       name,

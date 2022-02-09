@@ -19,8 +19,8 @@ export class Product {
   @Column()
   updatedAt!: string;
 
-  @ManyToOne(() => User, (user) => user.cart)
-  userId!: string;
+  @Column({ nullable: true })
+  imageUrl!: string;
 
   constructor() {
     this.uuid = uuidv4();
