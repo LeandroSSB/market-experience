@@ -49,9 +49,13 @@ export class User {
   })
   purchases!: Sale[];
 
+  @Column({ nullable: true })
+  recover!: string;
+
   constructor() {
     this.createdOn = new Date().toJSON();
     this.updatedOn = new Date().toJSON();
+    this.recover = uuidv4();
     this.uuid = uuidv4();
   }
 }

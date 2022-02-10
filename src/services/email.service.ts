@@ -11,8 +11,9 @@ interface IMailOptionsProps {
   from: string;
   to: string;
   subject: string;
-  context: {};
-  template: string;
+  context?: {};
+  template?: string;
+  text?: string;
 }
 
 interface ITransportOptionsProps {
@@ -45,6 +46,19 @@ class EmailService {
       output = info.response;
     });
     return output;
+  }
+
+  sendEmailAdm(MailOptions: IMailOptionsProps, isAdm: boolean) {
+    if (!isAdm) {
+      throw new ErrorHandler(401, "Missing admin permissions");
+    }
+
+    const mailOptions = MailOptions;
+    this.transport.sendMail(mailOptions, (err: any, info: any) => {
+      if (err) {
+        throw new ErrorHandler(400, err.messages);
+      }
+    });
   }
 }
 
