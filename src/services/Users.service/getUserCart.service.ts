@@ -1,6 +1,12 @@
 import { getCustomRepository } from "typeorm";
+import { Product, User } from "../../entities";
 import { UsersRepository } from "../../repositories/user.repository";
 import { ErrorHandler } from "../../utils/error";
+
+interface cartList {
+  owner: string;
+  cart: Product[];
+}
 
 class GetUserCartService {
   async execute(isAdm: boolean) {
@@ -9,9 +15,15 @@ class GetUserCartService {
       throw new ErrorHandler(401, "Missing admin permissions");
     }
 
-    const carts = await usersRepository.find({ select: ["uuid", "cart"] });
+    const users = await usersRepository.find();
 
-    console.log(carts);
+    const carts: cartList[] = [];
+    users.forEach((user) => {
+      return carts.push({
+        owner: user.email,
+        cart: user.cart,
+      });
+    });
     return { data: carts };
   }
 }

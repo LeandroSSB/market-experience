@@ -140,9 +140,35 @@ describe("Testing status code and returns", () => {
 
     expect(carts.body).toHaveProperty("data");
     expect(carts.body.data).toHaveProperty("map");
-    expect(carts.body.data[0]).toHaveProperty("uuid");
     expect(carts.body.data[0]).toHaveProperty("cart");
   });
 
-  it("DELETE /cart/:product_uuid - Only owner and adm can do that ", () => {});
+  it("DELETE /cart/:product_uuid - Only owner and adm can do that ", async () => {
+    const products = await request(app).get("/product").expect(200);
+    const admToken = jwt.sign(
+      { isAdm: true, email: "testa@gmail.com" },
+      config.secret
+    );
+
+    const addProduct = await request(app)
+      .post("/cart")
+      .send({
+        uuid: products.body.data[0].uuid,
+      })
+      .set({
+        Authorization: `Bearer ${admToken}`,
+      })
+      .expect(200);
+
+    await request(app).delete("/cart/notAnID").expect(401);
+    await request(app)
+      .delete(`/cart/${products.body.data[0].uuid}`)
+      .expect(401);
+    await request(app)
+      .delete(`/cart/${products.body.data[0].uuid}`)
+      .set({
+        Authorization: `Bearer ${admToken}`,
+      })
+      .expect(204);
+  });
 });

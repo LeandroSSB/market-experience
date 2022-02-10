@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
-import { User } from ".";
+import Sale from "./sale.entity";
 
 @Entity("products")
 export class Product {
@@ -21,6 +21,12 @@ export class Product {
 
   @Column({ nullable: true })
   imageUrl!: string;
+
+  @OneToMany((type) => Sale, (sale) => sale.product, { cascade: true })
+  sales!: Sale[];
+
+  @Column({ default: 0 })
+  available!: number;
 
   constructor() {
     this.uuid = uuidv4();

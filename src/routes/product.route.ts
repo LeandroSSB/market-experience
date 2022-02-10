@@ -1,6 +1,7 @@
 import { Express, Router } from "express";
 import AddProductCartController from "../controllers/product.controller/addProductCart.controller";
 import CreateProductController from "../controllers/product.controller/createProduct.controller";
+import DeleteUserCartController from "../controllers/product.controller/deleteUserCart.controller";
 import FindProductController from "../controllers/product.controller/findProduct.controller";
 import FindUserCartController from "../controllers/product.controller/findUserCart.controller";
 import GetProductsController from "../controllers/product.controller/getProducts.controller";
@@ -12,6 +13,7 @@ const findProductController = new FindProductController();
 const addProductCartController = new AddProductCartController();
 const findUserCartController = new FindUserCartController();
 const getUserCartController = new GetUserCartController();
+const deleteUserCartController = new DeleteUserCartController();
 
 export const productRouter = (app: Express) => {
   const routerProduct = Router();
@@ -26,6 +28,6 @@ export const productCartRouter = (app: Express) => {
   routerCart.post("", addProductCartController.handle);
   routerCart.get("/:uuid", findUserCartController.handle);
   routerCart.get("", getUserCartController.handle);
-
+  routerCart.delete("/:uuid", deleteUserCartController.handle);
   app.use("/cart", routerCart);
 };

@@ -26,6 +26,7 @@ export class User {
   updatedOn: string;
 
   @ManyToMany((type) => Product, (product) => product.uuid, {
+    onDelete: "CASCADE",
     cascade: true,
     eager: true,
   })
