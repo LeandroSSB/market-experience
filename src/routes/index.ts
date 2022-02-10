@@ -5,7 +5,7 @@ import {
   Request,
   Response,
 } from "express";
-import { productRouter, productCartRouter } from "./product.route";
+import { productRouter, productCartRouter, emailRouter } from "./product.route";
 import { userRouter } from "./user.route";
 import { handleError } from "../utils/error";
 
@@ -13,6 +13,7 @@ const router = (app: Express) => {
   userRouter(app);
   productRouter(app);
   productCartRouter(app);
+  emailRouter(app);
 
   app.use(
     (

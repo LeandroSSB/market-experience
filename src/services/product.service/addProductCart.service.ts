@@ -40,9 +40,7 @@ class AddProductCartService {
 
     await usersRepository.save(user);
 
-    const { password, ...output } = user;
-
-    return output;
+    return { data: user.cart };
   }
 }
 

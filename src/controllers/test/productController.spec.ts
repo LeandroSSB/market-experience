@@ -85,11 +85,6 @@ describe("Testing status code and returns", () => {
         Authorization: `Bearer ${user.body.token}`,
       })
       .expect(200);
-
-    expect(addProduct.body).toHaveProperty("cart");
-    expect(addProduct.body.cart).toHaveProperty("map");
-    expect(addProduct.body).not.toHaveProperty("password");
-    expect(addProduct.body).toHaveProperty("name");
   });
 
   it("GET /cart/:uuid - Should return the cart list ", async () => {
